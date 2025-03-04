@@ -117,6 +117,8 @@
 //   }
 //   return null;
 // }
+
+
 import { useState } from 'react';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -137,7 +139,7 @@ function Square({ value, onSquareClick }) {
 
 function Board({ xIsNext, squares, onPlay }) {
   function handleClick(i) {
-    if (calculateWinner(squares) || squares[i]) {
+    if (calculateWinner(squares).winner || squares[i]) {
       return;
     }
     const nextSquares = squares.slice();
@@ -149,10 +151,12 @@ function Board({ xIsNext, squares, onPlay }) {
     onPlay(nextSquares);
   }
 
-  const winner = calculateWinner(squares);
+  const { winner, isDraw } = calculateWinner(squares);
   let status;
   if (winner) {
     status = 'Победитель: ' + winner;
+  } else if (isDraw) {
+    status = 'Ничья!';
   } else {
     status = 'Следующий игрок: ' + (xIsNext ? 'X' : 'O');
   }
@@ -239,8 +243,9 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+      return { winner: squares[a], isDraw: false };
     }
   }
-  return null;
+  const isDraw = squares.every(square => square !== null);
+  return { winner: null, isDraw };
 }
