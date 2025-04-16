@@ -29,20 +29,13 @@ jobs:
         working-directory: vite-project
         run: npm run build
 
-      - name: Debug dist folder structure
-        working-directory: vite-project
+      - name: Verify build output
         run: |
-          echo "Contents of dist folder:"
+          echo "Built files:"
           ls -R ./dist
           echo ""
-          echo "Checking index.html links:"
-          if [ -f "./dist/index.html" ]; then
-            grep -E 'src="|href="' ./dist/index.html
-          fi
-
-      - name: Move dist folder to root
-        run: |
-          mv vite-project/dist ./dist
+          echo "Checking index.html asset paths:"
+          grep -E 'src="|href="' ./dist/index.html
 
       - name: Upload production artifacts
         uses: actions/upload-artifact@v4
@@ -63,14 +56,6 @@ jobs:
           name: production-files
           path: ./dist
 
-      - name: Verify deployment files
-        run: |
-          echo "Files to be deployed:"
-          ls -R ./dist
-          echo ""
-          echo "Checking file sizes:"
-          du -sh ./dist/*
-
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
@@ -78,4 +63,3 @@ jobs:
           publish_dir: ./dist
           publish_branch: gh-pages
           force_orphan: true
-          keep_files: false
