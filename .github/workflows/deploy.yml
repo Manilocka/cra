@@ -14,14 +14,14 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
+      - name: Navigate to project directory
+        run: cd vite-project
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
-
-      - name: Navigate to project directory
-        run: cd vite-project
 
       - name: Install dependencies
         run: npm ci
